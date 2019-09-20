@@ -24,9 +24,9 @@ Create two files, `imap.json` and `config.json` and specify their location with 
 Example `imap.json`:
 ```
 {
-	"server": "imap.yourprovider.com",
-	"user": "you@yourprovider.com",
-	"password": "PASSWORD"
+    "server": "imap.yourprovider.com",
+    "user": "you@yourprovider.com",
+    "password": "PASSWORD"
 }
 ```
 
@@ -42,29 +42,29 @@ The behavior of the program has configurations for each mapping as well as gener
 Example `config.json`:
 ```
 {
-	"mappings": [
-		{
-			"filter_sender": true,
-			"senders": [
-				"bob@hisprovider.com"
-			],
-			"filter_receiver": true,
-			"receivers": [ 
-				"you+data@yourprovider.com",
-				"you+reports@yourprovider.com"
-			],
-			"subject": [ "DATA" ],
-			"add_date": true,
-			"destination": "/media/disk/data/"
+    "mappings": [
+        {
+            "filter_sender": true,
+            "senders": [
+                "bob@hisprovider.com"
+            ],
+            "filter_receiver": true,
+            "receivers": [ 
+                "you+data@yourprovider.com",
+                "you+reports@yourprovider.com"
+            ],
+            "subject": [ "DATA" ],
+            "add_date": true,
+            "destination": "/media/disk/data/"
         },
-		{
-			"filter_sender": false,
-			"senders": [],
-			"filter_receiver": false,
-			"receivers": [],
-			"subject": [ "BACKUP" ],
-			"add_date": true,
-			"destination": "/media/disk/backup/"
+        {
+            "filter_sender": false,
+            "senders": [],
+            "filter_receiver": false,
+            "receivers": [],
+            "subject": [ "BACKUP" ],
+            "add_date": true,
+            "destination": "/media/disk/backup/"
         }
     ],
     "use_gmail_trash_flag_with_delete": true,
