@@ -4,73 +4,108 @@ Store mail attachments to file-system
 ### Description ###
 
 This program is a simple mail client written in Python.
-It allows you to automatically archive email attachments in function of predefined rules.
+
+The program will automatically archive email attachments based on predefined rules.
 
 ### Installation ###
 
 Clone the repository:
 
 ```
-git clone https://github.com/auino/mail-attachments-archiver.git
+git clone https://github.com/johnbenclark/mail-attachments-archiver.git
 ```
 
 ### Configuration ###
 
-Edit the `mail-attachments-archiver.py` file content by configuring the program and customizing its behavior.
+Create two files, `imap.json` and `config.json` and specify their location with the appropriate command-line flags.
 
-#### IMAP connection setup ####
+#### IMAP Connection Setup ####
 
-Following variables are used and should be configured:
- * `USER`: adopted IMAP username (e.g. `username@gmail.com`)
- * `PWD`: adopted IMAP password
- * `IMAPSERVER` adopted IMAP server (e.g. `imap.gmail.com`)
-
-#### Behavior configuration ####
-
-The behavior of the program is configured by associating specific senders to specific subjects keywords.
-When the program finds an email matching the couple (sender, subject), the attachment is stored on the disk.
-It is possible to set up a list of senders associated to a list of subjects.
-
-You can configure a separated list of senders (as in `mail-attachments-archiver.py`, for `YOUR_MAIL`, `ALICE_MAIL` and `BOB_MAIL` parameters, for reuse them), but it is not strictly necessary.
-
-The most important part of the behavior settings is relative to the `MAIL_MAPPINGS` variable content.
-Such variable contains a list of rules objects, defined for instance as follows:
-
+Example `imap.json`:
 ```
 {
-	'filter_sender': True,
-	'senders': [ 'me@gmail.com', 'you@gmail.com' ],
-	'add_date': True,
-	'subject': [ 'GITHUB TEST', 'GITHUB-TEST', 'GITHUBTEST' ],
-	'destination': '/media/disk/test/'
+	"server": "imap.yourprovider.com",
+	"user": "you@yourprovider.com",
+	"password": "PASSWORD"
 }
 ```
 
-The following attributes are needed:
+All of the following keys are required:
+* `server`: adopted IMAP server (e.g. `imap.gmail.com`)
+* `user`: adopted IMAP username (e.g. `username@gmail.com`)
+* `password`: adopted IMAP password 
+
+#### Behavior Configuration ####
+
+The behavior of the program has configurations for each mapping as well as general configuration.
+
+Example `config.json`:
+```
+{
+	"mappings": [
+		{
+			"filter_sender": true,
+			"senders": [
+				"bob@hisprovider.com"
+			],
+			"filter_receiver": true,
+			"receivers": [ 
+				"you+data@yourprovider.com",
+				"you+reports@yourprovider.com"
+			],
+			"subject": [ "DATA" ],
+			"add_date": true,
+			"destination": "/media/disk/data/"
+        },
+		{
+			"filter_sender": false,
+			"senders": [],
+			"filter_receiver": false,
+			"receivers": [],
+			"subject": [ "BACKUP" ],
+			"add_date": true,
+			"destination": "/media/disk/backup/"
+        }
+    ],
+    "use_gmail_trash_flag_with_delete": true,
+    "filter_unread_emails": false,
+    "mark_as_read": false,
+    "delete_email": true,
+    "mark_as_read_no_attachments": false,
+    "delete_email_no_attachments": false,
+    "mark_as_read_no_match": false,
+    "delete_email_no_match": false
+}
+```
+
+#### Behavior Configuration -- Mappings ####
+
+There are three possible filters for each mapping: senders, receivers, and subject. These filters use the `filter_sender`, `senders`, `filter_receiver`, `receivers`, and `subject` properties.
+
+When an email matches a mapping filter, the attachments will be saved according to the `add_date` and `subject` properties.
+
+The following properties are needed:
  * `filter_sender`, specifying if the filter on sender's email address is active/considered or not
- * `senders`, specifying the list of allowed source addresses
- * `add_date`, specifying if the email date (in `YYYYMMDD` format) should be appended to the begin of the filename or not (if enabled, output format is in `20160731_filename.txt` format)
- * `subject`, specifying the subject filter
+ * `senders`, specifying the list of allowed sender addresses (case-insensitive)
+ * `filter_receiver`, specifying if the filter on the receiver's email address is active/considered or not
+ * `receivers`, specifying the list of allowed receiver addresses (case-insensitive)
+ * `subject`, specifying the text that must appear somewhere in the subject
+ * `add_date`, specifying if the email date (in `YYYYMMDD` format) should be appended to the begin of the filename or not (if enabled, output format is in `20160731_attachment.ext` format)
  * `destination`, specifying the destination directory of attached files
 
-Source address and subject checks are both case insensitive.
-Concerning subject check, if the specified subject is found inside of the entire object (not equality comparison), the attachment is store, otherwise not.
+#### Behavior Configuration -- General ####
 
-#### Additional settings ####
+The following are general settings for email management.
 
-Additional settings may be configured in order to define emails management.
- * `FILTER_UNREAD_EMAILS` specifies if the program should only consider unread emails
- * `MARK_AS_READ` specifies if the program should mark an email as read after its attachments are stored/archived
- * `DELETE_EMAIL` specifies if the program should delete an email as read after its attachments are stored/archived
- * `MARK_AS_READ_NOATTACHMENTS` specifies if the program should mark as read emails without attachments
- * `DELETE_EMAIL_NOATTACHMENTS` specifies if the program should delete emails without attachments
- * `MARK_AS_READ_NOMATCH` specifies if the program should mark as read emails not matching the configured rules
- * `DELETE_EMAIL_NOMATCH` specifies if the program should delete emails not matching the configured rules
+ * `use_gmail_trash_flag_with_delete` causes the gmail specifi trash flag to be used which is required to delete emails instead of archiving.
+ * `filter_unread_emails` specifies if the program should only consider unread emails
+ * `mark_as_read` specifies if the program should mark an email as read after its attachments are stored/archived
+ * `delete_email` specifies if the program should delete an email as read after its attachments are stored/archived
+ * `mark_as_read_no_attachments` specifies if the program should mark as read emails without attachments
+ * `delete_email_no_attachments` specifies if the program should delete emails without attachments
+ * `mark_as_read_no_match` specifies if the program should mark as read emails not matching the configured rules
+ * `delete_email_no_match` specifies if the program should delete emails not matching the configured rules
 
 ### Notes ###
 
 This program is an extended and customized version of a [code snipped found on Stack Overflow](http://stackoverflow.com/questions/10182499/how-do-i-download-only-unread-attachments-from-a-specific-gmail-label).
-
-### Contacts ###
-
-You can find me on Twitter as [@auino](https://twitter.com/auino).
