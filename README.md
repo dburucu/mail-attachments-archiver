@@ -7,6 +7,8 @@ This program is a simple mail client written in Python.
 
 The program will automatically archive email attachments based on predefined rules.
 
+This fork has been made classful so as to be integrated with other python scripts.
+
 ### Installation ###
 
 Clone the repository:
