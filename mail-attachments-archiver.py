@@ -203,7 +203,7 @@ class mail-attachments-archiver()
         m.logout()
 
 if __name__ == "__main__":
-   # Parse command line arguments
+    # Parse command line arguments
     parser = argparse.ArgumentParser(
         description='Mail attachments archiver'
     )
