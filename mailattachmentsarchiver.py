@@ -221,5 +221,5 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    maa = mail-attachments-archiver(args.imap,args.config)
+    maa = mailattachmentsarchiver(args.imap,args.config)
     maa.get_mail()
