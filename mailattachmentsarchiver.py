@@ -28,7 +28,7 @@ import re
 import json
 import argparse
 
-class mail-attachments-archiver():
+class mailattachmentsarchiver():
 
     def __init__(self, imap_file, config_file):
         
