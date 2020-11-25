@@ -195,7 +195,7 @@ class mailattachmentsarchiver():
                         # marking as read and delete, if necessary
                         if self.MARK_AS_READ: flag_seen(m, emailid)
                         if self.DELETE_EMAIL: flag_delete(m, emailid)
-                    raise: pass
+                    except: pass
         # Expunge the items marked as deleted... (Otherwise it will never be actually 
         # deleted)
         if self.DELETE_EMAIL: m.expunge()
