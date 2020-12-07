@@ -85,16 +85,16 @@ class mailattachmentsarchiver():
         self.DELETE_EMAIL_NOMATCH = cfg['delete_email_no_match']
 
     # source: https://stackoverflow.com/questions/12903893/python-imap-utf-8q-in-subject-string
-    def decode_mime_words(self, s):
+    def _decode_mime_words(self, s):
         return u''.join(word.decode(encoding or 'utf8') if isinstance(word, bytes) else word for word, encoding in email.header.decode_header(s))
 
     # source: https://stackoverflow.com/questions/41395745/deleting-an-email-using-imaplib-gmail
-    def flag_delete(self, m, emailid):
+    def _flag_delete(self, m, emailid):
         if self.USE_GMAIL_TRASH_FLAG_WITH_DELETE:
             m.store(emailid,'X-GM-LABELS','\\Trash')
         m.store(emailid,'+FLAGS','\\Deleted')
 
-    def flag_seen(self, m, emailid):
+    def _flag_seen(self, m, emailid):
         m.store(emailid,'+FLAGS','\\Seen')
 
     def get_mail(self):
@@ -121,8 +121,8 @@ class mailattachmentsarchiver():
             # check if any attachments at all
             if mail.get_content_maintype() != 'multipart':
                 # marking as read and delete, if necessary
-                if self.MARK_AS_READ_NOATTACHMENTS: flag_seen(m, emailid)
-                if self.DELETE_EMAIL_NOATTACHMENTS: flag_delete(m, emailid)
+                if self.MARK_AS_READ_NOATTACHMENTS: self._flag_seen(m, emailid)
+                if self.DELETE_EMAIL_NOATTACHMENTS: self._flag_delete(m, emailid)
                 continue
             # checking sender
             sender = mail['from'].split()[-1]
@@ -146,8 +146,8 @@ class mailattachmentsarchiver():
                     if str(sj).lower() in str(subject).lower(): outputrule = el
             if outputrule == None: # no match is found
                 # marking as read and delete, if necessary
-                if self.MARK_AS_READ_NOMATCH: flag_seen(m, emailid)
-                if self.DELETE_EMAIL_NOMATCH: flag_delete(m, emailid)
+                if self.MARK_AS_READ_NOMATCH: self._flag_seen(m, emailid)
+                if self.DELETE_EMAIL_NOMATCH: self._flag_delete(m, emailid)
                 continue
             outputdir = outputrule['destination']
             # we use walk to create a generator so we can iterate on the parts and 
@@ -156,14 +156,14 @@ class mailattachmentsarchiver():
                 # multipart are just containers, so we skip them
                 if part.get_content_maintype() == 'multipart':
                     # marking as read and delete, if necessary
-                    if self.MARK_AS_READ: flag_seen(m, emailid)
-                    if self.DELETE_EMAIL: flag_delete(m, emailid)
+                    if self.MARK_AS_READ: self._flag_seen(m, emailid)
+                    if self.DELETE_EMAIL: self._flag_delete(m, emailid)
                     continue
                 # is this part an attachment?
                 if part.get('Content-Disposition') is None:
                     # marking as read and delete, if necessary
-                    if self.MARK_AS_READ: flag_seen(m, emailid)
-                    if self.DELETE_EMAIL: flag_delete(m, emailid)
+                    if self.MARK_AS_READ: self._flag_seen(m, emailid)
+                    if self.DELETE_EMAIL: self._flag_delete(m, emailid)
                     continue
                 filename = part.get_filename()
                 counter = 1
@@ -180,7 +180,7 @@ class mailattachmentsarchiver():
                         if s in d: d = d.split(s)[0]
                     maildate = time.strftime('%Y%m%d', time.strptime(d, '%a, %d %b %Y %H:%M:%S'))
                     filename = maildate+'_'+filename
-                filename = decode_mime_words(u''+filename)
+                filename = self._decode_mime_words(u''+filename)
                 att_path = os.path.join(outputdir, filename)
                 # check if output directory exists
                 if not os.path.isdir(outputdir): os.makedirs(outputdir)
@@ -193,8 +193,8 @@ class mailattachmentsarchiver():
                         fp.write(part.get_payload(decode=True))
                         fp.close()
                         # marking as read and delete, if necessary
-                        if self.MARK_AS_READ: flag_seen(m, emailid)
-                        if self.DELETE_EMAIL: flag_delete(m, emailid)
+                        if self.MARK_AS_READ: self._flag_seen(m, emailid)
+                        if self.DELETE_EMAIL: self._flag_delete(m, emailid)
                     except: pass
         # Expunge the items marked as deleted... (Otherwise it will never be actually 
         # deleted)
