@@ -128,6 +128,13 @@ The following are general settings for email management.
  * `move_to_folder_no_attachments` specifies the folder to move emails not matching the configured rules
  * `move_to_date_subfolder_no_attachments` specifies if the program should move emails not matching the configured rules to an date subfolder
  
+
+### Execution ###
+```
+./mailattachmentsarchiver.py --imap "/path/to/imap.json" --config "/path/to/config.json"
+```
+
+
 ### Notes ###
 
 This program is an extended and customized version of a [code snipped found on Stack Overflow](http://stackoverflow.com/questions/10182499/how-do-i-download-only-unread-attachments-from-a-specific-gmail-label).

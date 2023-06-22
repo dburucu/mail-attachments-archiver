@@ -16,6 +16,11 @@
 # Email: david@va7eex.ca
 # GitHub project URL: https://github.com/va7eex/mail-attachments-archiver
 #
+# Additional modifications by
+# Author: Deniz Burucu
+# Email: d_b@gmx.de 
+# GitHub project URL: https://github.com/dburucu/mail-attachments-archiver
+#
 
 
 # libraries import
