@@ -1,0 +1,46 @@
+{
+    "mappings": [
+        {
+            "filter_sender": true,
+            "senders": [
+                "bob@hisprovider.com"
+            ],
+            "filter_receiver": true,
+            "receivers": [ 
+                "you+data@yourprovider.com",
+                "you+reports@yourprovider.com"
+            ],
+            "filter_subject": true,
+            "subject": [ "DATA" ],
+            "add_date": true,
+            "destination": "/media/disk/data/"
+        },
+        {
+            "filter_sender": false,
+            "senders": [],
+            "filter_receiver": false,
+            "receivers": [],
+            "filter_subject": false,
+            "subject": [ "BACKUP" ],
+            "add_date": true,
+            "destination": "/media/disk/backup/"
+        }
+    ],
+    "use_gmail_trash_flag_with_delete": true,
+    "filter_unread_emails": false,
+    "mark_as_read": false,
+    "delete_email": true,
+    "mark_as_read_no_attachments": false,
+    "delete_email_no_attachments": false,
+    "mark_as_read_no_match": false,
+    "delete_email_no_match": false,
+    "move_mail": true,
+    "move_to_folder": "MOVEAFTER",
+    "move_to_date_subfolder": true,
+    "move_mail_no_attachments": true,
+    "move_to_folder_no_attachments": "MOVEAFTER",
+    "move_to_date_subfolder_no_attachments": true,
+    "move_mail_no_match": true,
+    "move_to_folder_no_match": "MOVEAFTER",
+    "move_to_date_subfolder_no_match": true
+}

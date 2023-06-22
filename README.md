@@ -55,6 +55,7 @@ Example `config.json`:
                 "you+data@yourprovider.com",
                 "you+reports@yourprovider.com"
             ],
+            "filter_subject": true,
             "subject": [ "DATA" ],
             "add_date": true,
             "destination": "/media/disk/data/"
@@ -64,6 +65,7 @@ Example `config.json`:
             "senders": [],
             "filter_receiver": false,
             "receivers": [],
+            "filter_subject": false,
             "subject": [ "BACKUP" ],
             "add_date": true,
             "destination": "/media/disk/backup/"
@@ -76,7 +78,16 @@ Example `config.json`:
     "mark_as_read_no_attachments": false,
     "delete_email_no_attachments": false,
     "mark_as_read_no_match": false,
-    "delete_email_no_match": false
+    "delete_email_no_match": false,
+    "move_mail": true,
+    "move_to_folder": "MOVEAFTER",
+    "move_to_date_subfolder": true,
+    "move_mail_no_attachments": true,
+    "move_to_folder_no_attachments": "MOVEAFTER",
+    "move_to_date_subfolder_no_attachments": true,
+    "move_mail_no_match": true,
+    "move_to_folder_no_match": "MOVEAFTER",
+    "move_to_date_subfolder_no_match": true
 }
 ```
 
@@ -107,7 +118,16 @@ The following are general settings for email management.
  * `delete_email_no_attachments` specifies if the program should delete emails without attachments
  * `mark_as_read_no_match` specifies if the program should mark as read emails not matching the configured rules
  * `delete_email_no_match` specifies if the program should delete emails not matching the configured rules
-
+ * `move_mail` specifies if the program should move an email after its attachments are stored/archived
+ * `move_to_folder` specifies the folder to move an email after its attachments are stored/archived
+ * `move_to_date_subfolder` specifies if the program should move an email to an date subfolder after its attachments are stored/archived
+ * `move_mail_no_attachments` specifies if the program should move emails without attachments
+ * `move_to_folder_no_attachments` specifies the folder to move emails without attachments
+ * `move_to_date_subfolder_no_attachments` specifies if the program should move emails without attachments to an date subfolder
+ * `move_mail_no_attachments` specifies if the program should move emails not matching the configured rules
+ * `move_to_folder_no_attachments` specifies the folder to move emails not matching the configured rules
+ * `move_to_date_subfolder_no_attachments` specifies if the program should move emails not matching the configured rules to an date subfolder
+ 
 ### Notes ###
 
 This program is an extended and customized version of a [code snipped found on Stack Overflow](http://stackoverflow.com/questions/10182499/how-do-i-download-only-unread-attachments-from-a-specific-gmail-label).

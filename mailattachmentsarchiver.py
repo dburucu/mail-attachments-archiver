@@ -27,6 +27,7 @@ import time
 import re
 import json
 import argparse
+from datetime import datetime
 
 class mailattachmentsarchiver():
 
@@ -63,6 +64,33 @@ class mailattachmentsarchiver():
         # use gmail-specific trash flag when deleting
         self.USE_GMAIL_TRASH_FLAG_WITH_DELETE = cfg['use_gmail_trash_flag_with_delete']
 
+        # move emails?
+        self.MOVE_MAIL = cfg['move_mail'] 
+
+        # move emails to folder 
+        self.MOVE_TO_FOLDER = cfg['move_to_folder']
+
+        # move emails to date subfolder 
+        self.MOVE_TO_DATE_SUBFOLDER = cfg['move_to_date_subfolder']
+
+        # move emails after their attachments have been archived?
+        self.MOVE_MAIL_NOATTACHMENTS = cfg['move_mail_no_attachments'] 
+
+        # move email to folder after their attachments have been archived?
+        self.MOVE_TO_FOLDER_NOATTACHMENTS = cfg['move_to_folder_no_attachments']
+
+        # move emails to date subfolder after their attachments have been archived?
+        self.MOVE_TO_DATE_SUBFOLDER_NOATTACHMENTS = cfg['move_to_date_subfolder_no_attachments']
+
+        # if no match is found (on MAIL_MAPPINGS), move emails?
+        self.MOVE_MAIL_NOMATCH = cfg['move_mail_no_match'] 
+
+        # if no match is found (on MAIL_MAPPINGS), move email to folder?
+        self.MOVE_TO_FOLDER_NOMATCH = cfg['move_to_folder_no_match']
+
+        # if no match is found (on MAIL_MAPPINGS), move emails to date subfolder?
+        self.MOVE_TO_DATE_SUBFOLDER_NOMATCH = cfg['move_to_date_subfolder_no_match']
+
         # only consider unread emails?
         self.FILTER_UNREAD_EMAILS = cfg['filter_unread_emails']
 
@@ -97,6 +125,29 @@ class mailattachmentsarchiver():
     def _flag_seen(self, m, emailid):
         m.store(emailid,'+FLAGS','\\Seen')
 
+    def _move_to_folder(self, m, emailid, movetofolder = '', movetodatesubfolder = 0):
+        folder = 'INBOX'
+        if movetofolder:
+            folder = movetofolder
+        if movetodatesubfolder:
+            folder = folder + '/' + datetime.today().strftime('%Y-%m-%d')
+        
+        folderexists = 0
+        r = m.create(folder)
+        if r[0] == 'OK':
+            print('Created folder: ' + ' ' + str(folder))
+            folderexists = 1
+        if r[0] == 'NO':
+            if '[ALREADYEXISTS]' in str(r[1][0]):
+                folderexists = 1
+
+        if folderexists:
+            r = m.copy(emailid, folder)
+            print('Copy mail to folder: ' + folder)
+            if r[0] == 'OK':
+                self._flag_delete(m, emailid)
+                m.expunge()
+
     def get_mail(self):
         # connecting to the IMAP serer
         m = imaplib.IMAP4_SSL(self.IMAPSERVER)
@@ -121,6 +172,7 @@ class mailattachmentsarchiver():
             # check if any attachments at all
             if mail.get_content_maintype() != 'multipart':
                 # marking as read and delete, if necessary
+                if self.MOVE_TO_FOLDER_NOATTACHMENTS: self._move_to_folder(m, emailid, self.MOVE_TO_FOLDER_NOATTACHMENTS, self.MOVE_TO_DATE_SUBFOLDER_NOATTACHMENTS)
                 if self.MARK_AS_READ_NOATTACHMENTS: self._flag_seen(m, emailid)
                 if self.DELETE_EMAIL_NOATTACHMENTS: self._flag_delete(m, emailid)
                 continue
@@ -142,26 +194,33 @@ class mailattachmentsarchiver():
             for el in self.MAIL_MAPPINGS:
                 if el['filter_sender'] and (not (senderaddress.lower() in el['senders'])): continue
                 if el['filter_receiver'] and (not (receiveraddress.lower() in el['receivers'])): continue
-                for sj in el['subject']:
-                    if str(sj).lower() in str(subject).lower(): outputrule = el
+                if el['filter_subject']:
+                    for sj in el['subject']:
+                        if str(sj).lower() in str(subject).lower(): outputrule = el
+                else:
+                    outputrule = el
             if outputrule == None: # no match is found
                 # marking as read and delete, if necessary
+                if self.MOVE_MAIL_NOMATCH: self._move_to_folder(m, emailid, self.MOVE_TO_FOLDER_NOMATCH, self.MOVE_TO_DATE_SUBFOLDER_NOMATCH)
                 if self.MARK_AS_READ_NOMATCH: self._flag_seen(m, emailid)
                 if self.DELETE_EMAIL_NOMATCH: self._flag_delete(m, emailid)
                 continue
             outputdir = outputrule['destination']
+            
             # we use walk to create a generator so we can iterate on the parts and 
             # forget about the recursive headach
             for part in mail.walk():
                 # multipart are just containers, so we skip them
                 if part.get_content_maintype() == 'multipart':
                     # marking as read and delete, if necessary
+                    if self.MOVE_MAIL: self._move_to_folder(m, emailid, self.MOVE_TO_FOLDER, self.MOVE_TO_DATE_SUBFOLDER)
                     if self.MARK_AS_READ: self._flag_seen(m, emailid)
                     if self.DELETE_EMAIL: self._flag_delete(m, emailid)
                     continue
                 # is this part an attachment?
                 if part.get('Content-Disposition') is None:
                     # marking as read and delete, if necessary
+                    if self.MOVE_MAIL: self._move_to_folder(m, emailid, self.MOVE_TO_FOLDER, self.MOVE_TO_DATE_SUBFOLDER)
                     if self.MARK_AS_READ: self._flag_seen(m, emailid)
                     if self.DELETE_EMAIL: self._flag_delete(m, emailid)
                     continue
@@ -193,6 +252,7 @@ class mailattachmentsarchiver():
                         fp.write(part.get_payload(decode=True))
                         fp.close()
                         # marking as read and delete, if necessary
+                        if self.MOVE_MAIL: self._move_to_folder(m, emailid, self.MOVE_TO_FOLDER, self.MOVE_TO_DATE_SUBFOLDER)
                         if self.MARK_AS_READ: self._flag_seen(m, emailid)
                         if self.DELETE_EMAIL: self._flag_delete(m, emailid)
                     except: pass
