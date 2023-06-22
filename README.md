@@ -81,13 +81,13 @@ Example `config.json`:
     "delete_email_no_match": false,
     "move_mail": true,
     "move_to_folder": "MOVEAFTER",
-    "move_to_date_subfolder": true,
+    "move_to_date_subfolder": "month",
     "move_mail_no_attachments": true,
     "move_to_folder_no_attachments": "MOVEAFTER",
-    "move_to_date_subfolder_no_attachments": true,
+    "move_to_date_subfolder_no_attachments": "month",
     "move_mail_no_match": true,
     "move_to_folder_no_match": "MOVEAFTER",
-    "move_to_date_subfolder_no_match": true
+    "move_to_date_subfolder_no_match": "month"
 }
 ```
 
@@ -120,13 +120,13 @@ The following are general settings for email management.
  * `delete_email_no_match` specifies if the program should delete emails not matching the configured rules
  * `move_mail` specifies if the program should move an email after its attachments are stored/archived
  * `move_to_folder` specifies the folder to move an email after its attachments are stored/archived
- * `move_to_date_subfolder` specifies if the program should move an email to an date subfolder after its attachments are stored/archived
+ * `move_to_date_subfolder` specifies if the program should move an email to an date subfolder after its attachments are stored/archived (`month`, `day` or other)
  * `move_mail_no_attachments` specifies if the program should move emails without attachments
  * `move_to_folder_no_attachments` specifies the folder to move emails without attachments
- * `move_to_date_subfolder_no_attachments` specifies if the program should move emails without attachments to an date subfolder
- * `move_mail_no_attachments` specifies if the program should move emails not matching the configured rules
- * `move_to_folder_no_attachments` specifies the folder to move emails not matching the configured rules
- * `move_to_date_subfolder_no_attachments` specifies if the program should move emails not matching the configured rules to an date subfolder
+ * `move_to_date_subfolder_no_attachments` specifies if the program should move emails without attachments to an date subfolder (`month`, `day` or other)
+ * `move_mail_no_match` specifies if the program should move emails not matching the configured rules
+ * `move_to_folder_no_match` specifies the folder to move emails not matching the configured rules
+ * `move_to_date_subfolder_no_match` specifies if the program should move emails not matching the configured rules to an date subfolder (`month`, `day` or other)
  
 
 ### Execution ###

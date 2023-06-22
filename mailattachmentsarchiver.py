@@ -134,8 +134,10 @@ class mailattachmentsarchiver():
         folder = 'INBOX'
         if movetofolder:
             folder = movetofolder
-        if movetodatesubfolder:
+        if movetodatesubfolder == 'day':
             folder = folder + '/' + datetime.today().strftime('%Y-%m-%d')
+        if movetodatesubfolder == 'month':
+            folder = folder + '/' + datetime.today().strftime('%Y-%m')
         
         folderexists = 0
         r = m.create(folder)
