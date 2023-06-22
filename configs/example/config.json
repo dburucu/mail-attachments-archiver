@@ -36,11 +36,11 @@
     "delete_email_no_match": false,
     "move_mail": true,
     "move_to_folder": "MOVEAFTER",
-    "move_to_date_subfolder": true,
+    "move_to_date_subfolder": "month",
     "move_mail_no_attachments": true,
     "move_to_folder_no_attachments": "MOVEAFTER",
-    "move_to_date_subfolder_no_attachments": true,
+    "move_to_date_subfolder_no_attachments": "month",
     "move_mail_no_match": true,
     "move_to_folder_no_match": "MOVEAFTER",
-    "move_to_date_subfolder_no_match": true
+    "move_to_date_subfolder_no_match": "month"
 }
